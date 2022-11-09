@@ -5,7 +5,7 @@ from django.utils.crypto import get_random_string
 
 class UserManager(BaseUserManager):
     def _create(self, username, phone, password, **extra_fields):
-        if not username or phone:
+        if not username and phone:
             raise ValueError('User must have username and phone')
         user = self.model(
             username=username,
@@ -18,12 +18,12 @@ class UserManager(BaseUserManager):
 
     def create_user(self, username, phone, password, **extra_fields):
         extra_fields.setdefault('is_active', False)
-        extra_fields.setdefault('is_active', False)
+        extra_fields.setdefault('is_staff', False)
         return self._create(username, phone, password, **extra_fields)
 
-    def create_user(self, username, phone, password, **extra_fields):
+    def create_superuser(self, username, phone, password, **extra_fields):
         extra_fields.setdefault('is_active', True)
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', True)
         return self._create(username, phone, password, **extra_fields)
 
 
@@ -34,7 +34,7 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=10, blank=True)
 
-    object = UserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['phone']
