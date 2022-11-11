@@ -43,6 +43,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    views_count = models.IntegerField(default=0)
     category = models.ForeignKey(
         to=Category,
         on_delete=models.CASCADE,

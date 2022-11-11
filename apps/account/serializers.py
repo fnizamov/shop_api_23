@@ -29,7 +29,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.create(**validated_data)
+        user = User.objects.create_user(**validated_data)
         user.create_activation_code()
         send_activation_sms(user.phone, user.activation_code)
         return user
