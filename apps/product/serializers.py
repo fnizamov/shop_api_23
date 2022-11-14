@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Product, ProductImage, Category
 
+from apps.review.serializers import CommentSerializer
 
 class ProductSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
@@ -24,12 +25,22 @@ class ProductSerializer(serializers.ModelSerializer):
         attrs['user'] = user
         return attrs
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['comments'] = CommentSerializer(instance.comments.all(), many=True).data
+        rep['comments_count'] = instance.comments.all().count()
+        return rep
 
 class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ('image', 'title', 'price', 'in_stock', 'slug')
 
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['comments_count'] = instance.comments.all().count()
+        return rep
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

@@ -23,3 +23,6 @@ class Comment(models.Model):
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return f'Comment from {self.user.username} to {self.product.title}'
